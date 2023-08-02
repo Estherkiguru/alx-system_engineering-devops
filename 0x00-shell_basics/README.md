@@ -10,3 +10,5 @@ ls -l -This script displays current directory contents in a long format
 ls -la -This script displays current directory contents, including hidden files
 ## 5-listfilesdigitonly
 ls -lan -Ths script displays current directory contents.
+## 6-firstdirectory
+mkdir/tmp/my_first_directory-This script creates a directory named my_first_directory in the /tmp/ directory.
