@@ -8,3 +8,5 @@ cd-This script that changes the working directory to the user’s home directory
 ls -l -This script displays current directory contents in a long format
 ## 4-listmorefiles
 ls -la -This script displays current directory contents, including hidden files
+## 5-listfilesdigitonly
+ls -lan -Ths script displays current directory contents.
