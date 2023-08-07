@@ -1,2 +1,2 @@
 #!/bin/bash
-tr -d '\n' < "$1" | while read -n 1 char; do [ "$char" == $'\n' ] && echo || printf "$char"; done
+cut -c 1 | paste -s -d ''
