@@ -1,3 +1,2 @@
 #!/bin/bash
-cut -c1 | tr -d '\n' | head -c -1
-echo
+tr -d '\n' < "$1" | while read -n 1 char; do [ "$char" == $'\n' ] && echo || printf "$char"; done
