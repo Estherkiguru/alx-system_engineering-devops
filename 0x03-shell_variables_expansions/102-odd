@@ -1,2 +1,2 @@
 #!/bin/bash
-grep -n "" | grep -E "^[0-9]*[02468]:" | cut -d: -f2
+ls -1 | grep -v '[[:space:]]' | grep -v '[[:punct:]]'
