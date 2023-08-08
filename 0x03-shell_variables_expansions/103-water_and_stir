@@ -1,2 +1,2 @@
 #!/bin/bash
-echo -e "$(($(printf "%d" "'$WATER") + $(printf "%d" "'$STIR")))" | tr '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ' 'bestchol'
+echo -n "$WATER$STIR" | tr 'waterstir.' '0123456789' | tr '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ' 'bestchol'
