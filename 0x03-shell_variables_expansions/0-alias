@@ -1,2 +1,2 @@
 #!/bin/bash
-alias ls='echo -e "test_alias.sh\n - [Got]"; echo -e "total 0\n\n(8 chars long)"'
+alias ls="echo 0"
