@@ -37,7 +37,7 @@ This infrastructure has several SPOF such as if the MySQL database server is dow
 -Downtime during maintenance:
 This challenge arises during maintenance activity when deploying new code that necessitates restarting the web server.
 
-Scalability Challenge:
+-Scalability Challenge:
 This infrastructure may encounter difficulties in scaling effectively to handle a surge in incoming traffic posing a risk of performance degradation/downtime during high user activity periods.
 
 
