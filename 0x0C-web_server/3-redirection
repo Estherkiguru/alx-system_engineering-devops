@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# Install nginx on your web-01server
+# Nginx should be listening on port 80
+
 
 # Update package list
 sudo apt-get update
