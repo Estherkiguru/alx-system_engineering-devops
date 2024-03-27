@@ -1,20 +1,18 @@
 #!/usr/bin/env bash
 # Configure server using puppet
 
-# defines a Puppet class called nginx_server that 
-#  encapsulates the configuration for the Nginx server.
 class nginx_server {
   package { 'nginx':
     ensure => installed,
   }
 
-#  manages the Nginx service.
+#  manage the Nginx service.
   service { 'nginx':
     ensure => running,
     enable => true,
     require => Package['nginx'],
   }
-# manages the Nginx configuration file located at /etc/nginx/sites-available/default.
+# manage the Nginx configuration file
   file { '/etc/nginx/sites-available/default':
     ensure  => present,
     content => "
@@ -36,5 +34,5 @@ class nginx_server {
     notify => Service['nginx'],
   }
 }
-#  includes the nginx_server class, ensuring that it gets applied.
+#  include the nginx_server class
 include nginx_server
