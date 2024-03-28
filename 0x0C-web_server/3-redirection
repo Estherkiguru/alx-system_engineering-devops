@@ -20,9 +20,10 @@ sudo chmod -R 755 /var/www
 # Set up the default page
 echo -e "Hello World!" > /var/www/html/index.nginx-debian.html
 # Configure a new server block for redirection
-sudo sed -i '24i\       rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;' /etc/nginx/sites-available/default
+sudo sed -i '24i\       return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;' /etc/nginx/sites-available/default
+
 # Enable the new site configuration
-sudo ln -s /etc/nginx/sites-available/redirect /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
 
 #Restart nginx 
 sudo service nginx restart
