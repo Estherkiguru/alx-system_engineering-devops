@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+#Configures and installs HAProxy to send traffic to web-01 and web-02
+
+#HAProxy installation and configuration
+sudo apt-get update
+apt-get -y install haproxy
+
+#Edit server config file
+server_config=\
+"
+frontend  Esther_frontend
+        bind *:80
+        mode http
+        default_backend Esther_backend
+backend Esther_backend
+        balance roundrobin
+        server 497578-web-01 3.85.16.157 check
+        server 497578-web-02 100.26.57.230 check
+"
+
+echo "$server_config" | sudo tee -a /etc/haproxy/haproxy.cfg
+
+#Enable HAProxy to be started by init script
+echo "ENABLED=1" | sudo tee -a /etc/default/haproxy
+
+#Test config file
+sudo haproxy -c -f /etc/haproxy/haproxy.cfg
+
+#nginx restart
+sudo service haproxy restart
