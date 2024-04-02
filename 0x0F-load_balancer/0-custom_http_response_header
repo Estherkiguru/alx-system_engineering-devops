@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Function to configure a custom Nginx response header to web server
+
+#packages update
+sudo apt-get update
+sudo apt-get install -y nginx
+
+#configure web-02 to be identical to web-01
+echo "Hello World!" | sudo tee /var/www/html/index.html
+
+#Redirection
+redirect="server_name _:\n\rewrite ^\/redirect_me https:\/\/github.com\/Estherkiguru permanent:"
+
+sudo sed -i "s/server_name _:/$redirect/" /etc/nginx/sites-enabled/default
+
+#custom error page
+echo "Ceci n'est pas une page" | sudo tee /var/www/html/404.html
+
+#HTTP response header
+
+sudo sed -i "s/server_name _;/&\n    add_header X-Served-By $HOSTNAME;/" /etc/nginx/sites-enabled/default
+
+#Syntax Errors test
+sudo nginx -t
+
+#Restart nginx
+sudo service nginx restart
