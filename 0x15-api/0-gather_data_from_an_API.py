@@ -1,16 +1,30 @@
 #!/usr/bin/python3
-"""Generate a Todo list for a given employee id"""
+"""For a given employee ID, returns information about
+their TODO list progress"""
+
 import requests
-from sys import argv
+import sys
 
 if __name__ == "__main__":
-    url = "https://jsonplaceholder.typicode.com/"
-    id = argv[1]
 
-    user = requests.get(url + f"users/{id}").json()
-    todos = requests.get(url + f"todos", params={"userId": id}).json()
+    userId = sys.argv[1]
+    user = requests.get("https://jsonplaceholder.typicode.com/users/{}"
+                        .format(userId))
 
-    tasks = [i["title"] for i in todos if i["completed"]]
-    print(f"Employee {user.get('name')} is done with ", end="")
-    print(f"tasks({len(tasks)}/{len(todos)}):")
-    [print(f"\t {i}") for i in tasks]
+    name = user.json().get('name')
+
+    todos = requests.get('https://jsonplaceholder.typicode.com/todos')
+    totalTasks = 0
+    completed = 0
+
+    for task in todos.json():
+        if task.get('userId') == int(userId):
+            totalTasks += 1
+            if task.get('completed'):
+                completed += 1
+
+    print('Employee {} is done with tasks({}/{}):'
+          .format(name, completed, totalTasks))
+
+    print('\n'.join(["\t " + task.get('title') for task in todos.json()
+          if task.get('userId') == int(userId) and task.get('completed')]))
