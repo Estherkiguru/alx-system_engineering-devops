@@ -1,52 +1,42 @@
 #!/usr/bin/python3
-
-"""Exports to-do list information for a given employee ID to CSV format."""
-
-
-import csv
+"""
+returns information about employees TODO list progress
+"""
 import requests
 import sys
+import csv
 
-def get_user_tasks(user_id):
-    # Make API request to fetch tasks for the specified user
-    response = requests.get(f'https://jsonplaceholder.typicode.com/todos?userId={user_id}')
 
-    # Check if request was successful
-    if response.status_code == 200:
-        tasks = response.json()
-        return tasks
-    else:
-        print("Failed to fetch tasks")
-        return None
-
-def export_to_csv(user_id, tasks):
-    if tasks:
-        # Define CSV file name
-        filename = f"{user_id}.csv"
-
-        # Write data to CSV file
-        with open(filename, 'w', newline='') as csvfile:
-            fieldnames = ['USER_ID', 'USERNAME', 'TASK_COMPLETED_STATUS', 'TASK_TITLE']
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-
-            writer.writeheader()
-            for task in tasks:
-                writer.writerow({
-                    'USER_ID': user_id,
-                    'USERNAME': task['username'],  # Assuming username is available
-                    'TASK_COMPLETED_STATUS': str(task['completed']),
-                    'TASK_TITLE': task['title']
-                })
-        print(f"Tasks exported to {filename}")
-    else:
-        print("No tasks found for the specified user")
+import requests
+import sys
+import csv
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python3 1-export_to_CSV.py <USER_ID>")
-        sys.exit(1)
+    url = "https://jsonplaceholder.typicode.com/"
 
     user_id = sys.argv[1]
-    tasks = get_user_tasks(user_id)
-    export_to_csv(user_id, tasks)
+
+    # Fetch user data
+    user_response = requests.get(url + "users/{}".format(user_id))
+    if user_response.status_code != 200:
+        print("Failed to fetch user data")
+        sys.exit(1)
+    user_data = user_response.json()
+    username = user_data.get("username")
+
+    # Fetch todos for the user
+    todos_response = requests.get(url + "todos", params={"userId": user_id})
+    if todos_response.status_code != 200:
+        print("Failed to fetch TODO list")
+        sys.exit(1)
+    todos = todos_response.json()
+
+    # Write data to CSV
+    with open("{}.csv".format(user_id), "w", newline="") as csvfile:
+        writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
+
+        for t in todos:
+            writer.writerow([user_id, username, t.get("completed"), t.get("title")])
+
+    print("Tasks exported to {}.csv".format(user_id))
 
