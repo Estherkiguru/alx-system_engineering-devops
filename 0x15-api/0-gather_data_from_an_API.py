@@ -1,44 +1,53 @@
 #!/usr/bin/python3
-"""For a given employee ID, returns information about
-their TODO list progress"""
+"""Module: employee_todo.py
+Fetches and displays TODO list progress for a given employee
+ID using a REST API
+"""
 
 import requests
 import sys
 
+
+def fetch_todo_progress(employee_id):
+    """
+    Function: fetch_todo_progress
+    Fetches TODO list progress for a given employee ID.
+    Parameters:
+        - employee_id: Integer, employee ID
+    Returns: None
+    """
+    base_url = "https://jsonplaceholder.typicode.com"
+    user_url = "{}/users/{}".format(base_url, employee_id)
+    todos_url = "{}/todos?userId={}".format(base_url, employee_id)
+
+    # Fetch user information
+    user_response = requests.get(user_url)
+    user_data = user_response.json()
+    employee_name = user_data.get('name')
+
+    # Fetch TODO list for the employee
+    todos_response = requests.get(todos_url)
+    todos_data = todos_response.json()
+
+    # Calculate progress
+    total_tasks = len(todos_data)
+    completed_tasks = sum(task.get("completed", False) for task in todos_data)
+
+    # Display progress
+    print("Employee {} is done with tasks ({}/{}):".format(
+        employee_name, completed_tasks, total_tasks), end='\n')
+
+    # Display titles of completed tasks
+    for task in todos_data:
+        if task.get('completed', False):
+            print("\t {}".format(task.get("title")))
+
+
 if __name__ == "__main__":
-    # Extract the employee ID from command line argument
-    userId = sys.argv[1]
-    
-    # Fetch user data using the provided user ID
-    user = requests.get("https://jsonplaceholder.typicode.com/users/{}"
-                        .format(userId))
+    if len(sys.argv) != 2:
+        print("Usage: python3 0-gather_data_from_an_API.py <employee_id>")
+        sys.exit(1)
 
-    # Extract the name of the user
-    name = user.json().get('name')
-
-    # Fetch all tasks
-    todos = requests.get('https://jsonplaceholder.typicode.com/todos')
-
-    # Initialize variables to count total tasks and completed tasks
-    totalTasks = 0
-    completed = 0
-
-    # Iterate through all tasks
-    for task in todos.json():
-        if task.get('userId') == int(userId):
-            totalTasks += 1
-            if task.get('completed'):
-                completed += 1
-
-    # Print the employee's progress summary
-    print('Employee {} is done with tasks({}/{}):'
-          .format(name, completed, totalTasks))
-
-    # Print the titles of completed tasks with proper indentation
-    completed_tasks = [task.get('title') for task in todos.json()
-                       if task.get('userId') == int(userId) and task.get('completed')]
-    
-    # Print each completed task with proper indentation
-    for task in completed_tasks:
-        print('\t', task)
-
+    # Extract employee ID from command-line arguments
+    employee_id = int(sys.argv[1])
+    fetch_todo_progress(employee_id)
